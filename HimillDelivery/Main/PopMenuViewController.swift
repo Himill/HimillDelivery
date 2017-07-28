@@ -113,14 +113,18 @@ extension PopMenuViewController: UITableViewDataSource, UITableViewDelegate {
             // 已完成订单
             let destinyViewController: OrderFinishedViewController = self.getViewController(storyboardName: "OrderFinished", viewControllerId: "SID_OrderFinishedViewController") as! OrderFinishedViewController
             self.navigationController?.pushViewController(destinyViewController, animated: true)
+            
             break
         case 1:
             // 订单结算
             let destinyViewController: SettlementViewController = self.getViewController(storyboardName: "Settlement", viewControllerId: "SID_SettlementViewController") as! SettlementViewController
             self.navigationController?.pushViewController(destinyViewController, animated: true)
+            
             break
         case 2:
             // 规则中心
+            let destinyViewController: RulesViewController = self.getViewController(storyboardName: "Rules", viewControllerId: "SID_RulesViewController") as! RulesViewController
+            self.navigationController?.pushViewController(destinyViewController, animated: true)
             
             break
         case 3:

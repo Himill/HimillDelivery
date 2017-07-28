@@ -27,4 +27,10 @@ target 'HimillDelivery' do
   
   pod 'Alamofire'
   
+  pod 'JPush'
+  
+  pod 'Starscream'
+  
+  pod 'BaiduMapKit'
+  
 end

@@ -48,7 +48,7 @@ class SettlementViewController: BaseViewController {
     
     func configUI() {
         self.settlementButtonView.layer.cornerRadius = 6.0
-        self.settlementButtonView.layer.borderColor = Constant().kGreenColor.cgColor
+        self.settlementButtonView.layer.borderColor = Constant.sharedInstance.kGreenColor.cgColor
         self.settlementButtonView.layer.borderWidth = 2.0
         
         self.totalCountLabel.text = "12单"

@@ -8,53 +8,58 @@
 
 import UIKit
 
-private var g_userData: UserData? = nil
 
 class UserData: NSObject {
     
-    public var userId: String = ""
-    public var userName: String = ""
-    public var userEmail: String = ""
-    public var userPhoneNumber: String = ""
-    public var userCreateDate: String = ""
-    public var userIdentifyNumber: String = ""
-    public var userSex: String = ""
-    public var userHeadImageUrl = ""
+    public var userId: String? = ""                          // id
+    public var userName: String? = ""                        // 用户名
+    public var userEmail: String? = ""                       // 邮箱
+    public var userPhoneNumber: String? = ""                 // 电话号码
+    public var userCreateDate: String? = ""                  // 创建时间
+    public var userIdentifyNumber: String? = ""              // 身份证
+    public var userSex: String? = ""                         // 性别
+    public var userHeadImageUrl: String? = ""                // 头像
+    public var userCheckStatus: String? = ""                 // 验证状态
     
     
-    public class func sharingUserData() -> UserData {
-        if g_userData == nil {
-            g_userData = UserData()
-        }
-        
-        if g_userData?.isPlistFileExist(myFileName: "UserData.plist") == false {
-            g_userData?.createUserDataFile()
-        }
-        
-        g_userData?.loadDataFromPlist()
-        
-        return g_userData!;
-    }
+    // 审核状态.
+    public let kCheckStatusNotChecked: String       = "notCheck"    // 未审核
+    public let kCheckStatusChecking: String         = "checking"    // 审核中
+    public let kCheckStatusChecked: String          = "checked"     // 审核通过
+    public let kCheckStatusCheckFailed: String      = "checkFaild"  // 审核未通过
+    
+    static let sharedInstance = UserData()
+    
+    private override init() {}
+    
     
     public func loadDataFromPlist() {
         let paths: NSArray = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, FileManager.SearchPathDomainMask.userDomainMask, true) as NSArray
         let filePath: NSString = paths[0] as! NSString
         let plistPath: String = filePath.appendingPathComponent("UserData.plist")
         
-        let userData: NSMutableDictionary = NSMutableDictionary.init(contentsOfFile: plistPath)!
+        let fileManager = FileManager.default
+        if fileManager.fileExists(atPath: filePath as String) == false {
+            self.createUserDataFile()
+        }
         
-        g_userData?.userId = userData.object(forKey: "userId") as! String
-        g_userData?.userName = userData.object(forKey: "userName") as! String
-        g_userData?.userEmail = userData.object(forKey: "userEmail") as! String
-        g_userData?.userPhoneNumber = userData.object(forKey: "userPhoneNumber") as! String
-        g_userData?.userCreateDate = userData.object(forKey: "userCreateDate") as! String
-        g_userData?.userIdentifyNumber = userData.object(forKey: "userIdentifyNumber") as! String
-        g_userData?.userSex = userData.object(forKey: "userSex") as! String
-        g_userData?.userHeadImageUrl = userData.object(forKey: "userHeadImageUrl") as! String
+        let userData: NSMutableDictionary = NSMutableDictionary(contentsOfFile: plistPath)!
+        
+        self.userId = userData.object(forKey: "id") as? String
+        self.userName = userData.object(forKey: "userName") as? String
+        self.userEmail = userData.object(forKey: "userEmail") as? String
+        self.userPhoneNumber = userData.object(forKey: "userPhoneNumber") as? String
+        self.userCreateDate = userData.object(forKey: "userCreateDate") as? String
+        self.userIdentifyNumber = userData.object(forKey: "userIdentifyNumber") as? String
+        self.userSex = userData.object(forKey: "userSex") as? String
+        self.userHeadImageUrl = userData.object(forKey: "userHeadImageUrl") as? String
+        self.userCheckStatus = userData.object(forKey: "userCheckStatus") as? String
     }
     
     public func checkIsLogin() -> Bool {
-        let userId = g_userData?.userId
+        self.loadDataFromPlist()
+        
+        let userId = self.userId
         if userId == nil || userId == "" {
             return false
         }
@@ -62,9 +67,25 @@ class UserData: NSObject {
     }
     
     public func clearLoginInfo() {
-        g_userData = nil
+        let paths: NSArray = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, FileManager.SearchPathDomainMask.userDomainMask, true) as NSArray
+        let filePath: NSString = paths[0] as! NSString
+        let plistPath: String = filePath.appendingPathComponent("UserData.plist")
         
-        self.createUserDataFile()
+        let userData: NSMutableDictionary = NSMutableDictionary(contentsOfFile: plistPath)!
+        
+        userData.setObject("", forKey: "id" as NSCopying)
+        userData.setObject("", forKey: "userName" as NSCopying)
+        userData.setObject("", forKey: "userEmail" as NSCopying)
+        userData.setObject("", forKey: "userPhoneNumber" as NSCopying)
+        userData.setObject("", forKey: "userCreateDate" as NSCopying)
+        userData.setObject("", forKey: "userIdentifyNumber" as NSCopying)
+        userData.setObject("", forKey: "userSex" as NSCopying)
+        userData.setObject("", forKey: "userHeadImageUrl" as NSCopying)
+        userData.setObject("", forKey: "userCheckStatus" as NSCopying)
+        
+        userData.write(toFile: plistPath, atomically: true)
+        
+        self.saveUserData()
     }
     
     public func saveUserData() {
@@ -72,16 +93,23 @@ class UserData: NSObject {
         let filePath: NSString = paths[0] as! NSString
         let plistPath: String = filePath.appendingPathComponent("UserData.plist")
         
-        let userData: NSMutableDictionary = NSMutableDictionary.init(contentsOfFile: plistPath)!
+        let fileManager = FileManager.default
         
-        userData .setObject((self.userId != "" ? self.userId : ""), forKey: "userId" as NSCopying)
-        userData .setObject((self.userName != "" ? self.userName : ""), forKey: "userName" as NSCopying)
-        userData .setObject((self.userEmail != "" ? self.userEmail : ""), forKey: "userEmail" as NSCopying)
-        userData .setObject((self.userPhoneNumber != "" ? self.userPhoneNumber : ""), forKey: "userPhoneNumber" as NSCopying)
-        userData .setObject((self.userCreateDate != "" ? self.userCreateDate : ""), forKey: "userCreateDate" as NSCopying)
-        userData .setObject((self.userIdentifyNumber != "" ? self.userIdentifyNumber : ""), forKey: "userIdentifyNumber" as NSCopying)
-        userData .setObject((self.userSex != "" ? self.userSex : ""), forKey: "userSex" as NSCopying)
-        userData .setObject((self.userHeadImageUrl != "" ? self.userHeadImageUrl : ""), forKey: "userHeadImageUrl" as NSCopying)
+        if fileManager.fileExists(atPath: plistPath) == false {
+            self.createUserDataFile()
+        }
+        
+        let userData: NSMutableDictionary = NSMutableDictionary(contentsOfFile: plistPath)!
+        
+        userData.setObject(self.userId ?? "", forKey: "id" as NSCopying)
+        userData.setObject(self.userName ?? "", forKey: "userName" as NSCopying)
+        userData.setObject(self.userEmail ?? "", forKey: "userEmail" as NSCopying)
+        userData.setObject(self.userPhoneNumber ?? "", forKey: "userPhoneNumber" as NSCopying)
+        userData.setObject(self.userCreateDate ?? "", forKey: "userCreateDate" as NSCopying)
+        userData.setObject(self.userIdentifyNumber ?? "", forKey: "userIdentifyNumber" as NSCopying)
+        userData.setObject(self.userSex ?? "", forKey: "userSex" as NSCopying)
+        userData.setObject(self.userHeadImageUrl ?? "", forKey: "userHeadImageUrl" as NSCopying)
+        userData.setObject(self.userCheckStatus ?? "", forKey: "userCheckStatus" as NSCopying)
         
         userData.write(toFile: plistPath, atomically: true)
     }
@@ -93,14 +121,15 @@ class UserData: NSObject {
         let plistPath: String = filePath.appendingPathComponent("UserData.plist")
         FileManager.default.createFile(atPath: plistPath, contents: nil, attributes: nil)
         
-        let userData: NSMutableDictionary = NSMutableDictionary.init(dictionary: ["userId": "",
+        let userData: NSMutableDictionary = NSMutableDictionary.init(dictionary: ["id": "",
                                                                                   "userName": "",
                                                                                   "userEmail": "",
                                                                                   "userPhoneNumber": "",
                                                                                   "userCreateDate": "",
                                                                                   "userIdentifyNumber": "",
                                                                                   "userSex": "",
-                                                                                  "userHeadImageUrl": ""])
+                                                                                  "userHeadImageUrl": "",
+                                                                                  "userCheckStatus": ""])
         
         userData.write(toFile: plistPath, atomically: true)
     }
@@ -111,7 +140,7 @@ class UserData: NSObject {
         var filePath: String = path.appending("/")
         filePath = filePath.appending(myFileName)
         
-        return  FileManager.default.fileExists(atPath: filePath)
+        return FileManager.default.fileExists(atPath: filePath)
     }
     
 }

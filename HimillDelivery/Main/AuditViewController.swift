@@ -8,6 +8,8 @@
 
 import UIKit
 import BEMCheckBox
+import Alamofire
+import SwiftyJSON
 
 enum ImageViewPickedType {
     case handheldId
@@ -102,6 +104,12 @@ class AuditViewController: BaseViewController {
     
     @objc private func commitButtonClicked(sender: Any) {
         
+        if self.checkAllInfoReady() {
+            
+            self.requestForUploadAudit()
+            
+        }
+        
     }
     
     @objc private func handheldCardButtonClicked(sender: Any) {
@@ -136,14 +144,134 @@ class AuditViewController: BaseViewController {
     
     private func imagePickerPopUp() {
         let alert: UIAlertController = UIAlertController.init(title: nil, message: nil, preferredStyle: UIAlertControllerStyle.actionSheet)
+        
         alert.addAction(UIAlertAction.init(title: "从相册选择", style: UIAlertActionStyle.default, handler: { (action: UIAlertAction) in
             self.loadLocalImage()
         }))
+        
         alert.addAction(UIAlertAction.init(title: "拍照", style: UIAlertActionStyle.default, handler: { (action: UIAlertAction) in
             self.loadCamera()
         }))
+        
         alert.addAction(UIAlertAction.init(title: "取消", style: UIAlertActionStyle.cancel, handler:nil))
+        
         self.present(alert, animated: true, completion: nil)
+    }
+    
+    
+    // MARK: - Network
+    
+    private func requestForUploadAudit() {
+        
+        let frontIDImageData = UIImageJPEGRepresentation(self.frontIdCardImageView.image!, 0.5)
+        let handheldIdImageData = UIImageJPEGRepresentation(self.handheldIdCardImageView.image!, 0.5)
+        
+        let requestUrlString: String = CommonUrls.sharedInstance.kServerUrl + CommonUrls.sharedInstance.kProjectUrl + CommonUrls.sharedInstance.kSubmitIdAuditUrl
+        
+        let parameters = [
+            "mobile": UserData.sharedInstance.userPhoneNumber,
+            "idNumber": self.idNumberTextField.text,
+            "name": self.realNameTextField.text]
+        
+        self.showProgressHUD(message: nil)
+        
+        Alamofire.upload(multipartFormData: { (multipartFormData) in
+            
+            multipartFormData.append(frontIDImageData!, withName: "frontimageFile", fileName: "frontimageFile.jpg", mimeType: "image/jpg")
+            multipartFormData.append(handheldIdImageData!, withName: "reverseimageFile", fileName: "reverseimageFile.jpg", mimeType: "image/jpg")
+            
+            for (key, value) in parameters {
+                multipartFormData.append((value?.data(using: String.Encoding.utf8))!, withName: key)
+            }
+            
+        }, to: requestUrlString) { (encodingResult) in
+            
+            switch encodingResult {
+                
+            case .success(let upload, _, _):
+                
+                upload.responseJSON { response in
+                    
+                    guard let result = response.result.value else {
+                        print(response.result.error!)
+                        self.hideProgressHUD()
+                        return
+                    }
+                    
+                    let resultJson = JSON(result)
+                    print(resultJson)
+                    
+                    // 更新审核状态.
+                    UserData.sharedInstance.userCheckStatus = resultJson["map"]["courier"]["isCheck"].string
+                    UserData.sharedInstance.saveUserData()
+                    
+                    self.showAlert(titleString: "提交成功", messageString: "审核通过后，即可正常抢单", dismissTime: 0.5, finishedBlock: {
+                        self.navigationController?.popViewController(animated: true)
+                    })
+                    
+                    self.hideProgressHUD()
+                }
+                
+                break
+                
+            case .failure(let encodingError):
+                
+                print(encodingError)
+                
+                self.hideProgressHUD()
+                
+                break
+            }
+        }
+    
+    }
+    
+    private func checkAllInfoReady() -> Bool {
+        
+        if (self.realNameTextField.text?.characters.count)! == 0 {
+            
+            self.showAlert(titleString: "请输入真实姓名", messageString: "")
+            return false
+        }
+        
+        if self.checkIdNumberCorrect() == false {
+            
+            self.showAlert(titleString: "请输入正确的身份证", messageString: "")
+            return false
+        }
+        
+        if self.checkAllImageReady() == false {
+            
+            return false
+        }
+    
+        return true
+    }
+    
+    private func checkIdNumberCorrect() -> Bool {
+    
+        if self.idNumberTextField.text?.characters.count != 18 {
+            return false
+        }
+        
+        return true
+    }
+    
+    private func checkAllImageReady() -> Bool {
+    
+        if (self.handheldIdCardImageView == nil) || (self.handheldIdCardImageView.isHidden == true) {
+            
+            self.showAlert(titleString: "请选择手持身份证照片", messageString: "")
+            return false
+        }
+        
+        if (self.frontIdCardImageView == nil) || (self.frontIdCardImageView.isHidden == true) {
+            
+            self.showAlert(titleString: "请选择身份证正面照片", messageString: "")
+            return false
+        }
+    
+        return true
     }
     
 
@@ -165,7 +293,7 @@ extension AuditViewController: UIImagePickerControllerDelegate, UINavigationCont
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         picker.dismiss(animated: true, completion: nil)
         
-        let imagePicked: UIImage = info[UIImagePickerControllerEditedImage] as! UIImage
+        let imagePicked: UIImage = info[UIImagePickerControllerOriginalImage] as! UIImage
         
         switch self.imageViewType! {
         case .handheldId:

@@ -71,9 +71,9 @@ class TopOptionsView: UIView {
     private func changeOption(option: TopOptions) {
         switch option {
         case .newTask:
-            self.newTaskLabel?.textColor = Constant().kRedColor
-            self.toPickUpLabel?.textColor = Constant().kBlackLightFontColor
-            self.distributionLabel?.textColor = Constant().kBlackLightFontColor
+            self.newTaskLabel?.textColor = Constant.sharedInstance.kRedColor
+            self.toPickUpLabel?.textColor = Constant.sharedInstance.kBlackLightFontColor
+            self.distributionLabel?.textColor = Constant.sharedInstance.kBlackLightFontColor
             
             UIView.animate(withDuration: 0.3, animations: {
                 self.lineView?.frame = CGRect(x: 0, y: (self.lineView?.frame.origin.y)!, width: (self.lineView?.frame.size.width)!, height: (self.lineView?.frame.size.height)!)
@@ -83,9 +83,9 @@ class TopOptionsView: UIView {
             
             break
         case .toPickUp:
-            self.newTaskLabel?.textColor = Constant().kBlackLightFontColor
-            self.toPickUpLabel?.textColor = Constant().kRedColor
-            self.distributionLabel?.textColor = Constant().kBlackLightFontColor
+            self.newTaskLabel?.textColor = Constant.sharedInstance.kBlackLightFontColor
+            self.toPickUpLabel?.textColor = Constant.sharedInstance.kRedColor
+            self.distributionLabel?.textColor = Constant.sharedInstance.kBlackLightFontColor
             
             UIView.animate(withDuration: 0.3, animations: {
                 self.lineView?.frame = CGRect(x: (self.lineView?.frame.size.width)!, y: (self.lineView?.frame.origin.y)!, width: (self.lineView?.frame.size.width)!, height: (self.lineView?.frame.size.height)!)
@@ -95,9 +95,9 @@ class TopOptionsView: UIView {
             
             break
         case .distribution:
-            self.newTaskLabel?.textColor = Constant().kBlackLightFontColor
-            self.toPickUpLabel?.textColor = Constant().kBlackLightFontColor
-            self.distributionLabel?.textColor = Constant().kRedColor
+            self.newTaskLabel?.textColor = Constant.sharedInstance.kBlackLightFontColor
+            self.toPickUpLabel?.textColor = Constant.sharedInstance.kBlackLightFontColor
+            self.distributionLabel?.textColor = Constant.sharedInstance.kRedColor
             
             UIView.animate(withDuration: 0.3, animations: {
                 self.lineView?.frame = CGRect(x: (self.lineView?.frame.size.width)! * 2, y: (self.lineView?.frame.origin.y)!, width: (self.lineView?.frame.size.width)!, height: (self.lineView?.frame.size.height)!)

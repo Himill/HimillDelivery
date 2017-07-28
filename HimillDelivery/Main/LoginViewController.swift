@@ -9,6 +9,8 @@
 import UIKit
 import QuartzCore
 import MZTimerLabel
+import Alamofire
+import SwiftyJSON
 
 class LoginViewController: BaseViewController {
     
@@ -22,12 +24,35 @@ class LoginViewController: BaseViewController {
     
     @IBOutlet weak var loginButtonView: UIView!
     
-    @IBAction func loginButtonClicked(_ sender: Any) {
-        let dashboardViewController: DashboardViewController = self.getViewController(storyboardName: "Dashboard", viewControllerId: "SID_DashboardViewController") as! DashboardViewController
-        self.navigationController?.pushViewController(dashboardViewController, animated: true)
-    }
-    
     var timerLabel: MZTimerLabel? = nil
+    
+    @IBAction func loginButtonClicked(_ sender: Any) {
+        
+        if CommonUtils.sharedInstance.checkPhoneNumberExist(phoneNumber: self.phoneNumberTextField.text!) {
+            
+            self.showProgressHUD(message: nil)
+            
+            SMSSDK.commitVerificationCode(self.veryficationCodeTextField.text!, phoneNumber: self.phoneNumberTextField.text!, zone: "86", result: { (userInfo: SMSSDKUserInfo?, error: Error?) in
+                
+                // 验证通过，发送注册请求.
+                if error == nil {
+                
+                    self.requestForLogin()
+                
+                } else {
+                    
+                    print("验证失败", error!)
+                    self.showAlert(titleString: "验证失败", messageString: "请输入与手机号匹配的验证码")
+                    self.hideProgressHUD()
+                }
+                
+            })
+            
+        } else {
+            self.showAlert(titleString: "请输入正确的手机号", messageString: "")
+        }
+        
+    }
     
 
     override func viewDidLoad() {
@@ -93,7 +118,79 @@ class LoginViewController: BaseViewController {
     }
     
     @objc private func getVerificationButtonClicked(sender: UIButton) {
-        self.startTimerLabel()
+        
+        if CommonUtils.sharedInstance.checkPhoneNumberExist(phoneNumber: self.phoneNumberTextField.text!) {
+            
+            SMSSDK.getVerificationCode(by: SMSGetCodeMethodSMS, phoneNumber: self.phoneNumberTextField.text!, zone: "86", customIdentifier: nil, result: { (error: Error?) in
+                
+                if error == nil {
+                    
+                    self.startTimerLabel()
+                } else {
+                
+                    print("请求短信失败")
+                }
+                
+            })
+            
+        } else {
+        
+            self.showAlert(titleString: "请输入正确的手机号", messageString: "")
+        }
+    }
+    
+    private func gotoDashboardView() {
+        
+        let dashboardViewController: DashboardViewController = self.getViewController(storyboardName: "Dashboard", viewControllerId: "SID_DashboardViewController") as! DashboardViewController
+        
+        self.navigationController?.pushViewController(dashboardViewController, animated: true)
+    }
+    
+    
+    // MARK: - Network
+    
+    private func requestForLogin() {
+        
+        let params: Dictionary<String, String> = ["mobile": self.phoneNumberTextField.text!]
+        
+        let requestUrlString: String = CommonUrls.sharedInstance.kServerUrl + CommonUrls.sharedInstance.kProjectUrl + CommonUrls.sharedInstance.kLoginUrl
+        
+        Alamofire.request(requestUrlString, method: .post, parameters: params).responseJSON { (response) in
+            
+            guard let result = response.result.value else {
+                print(response.result.error!)
+                self.hideProgressHUD()
+                return
+            }
+            
+            self.hideProgressHUD()
+            print(result)
+            
+            let resultJson = JSON(result)
+            
+            if resultJson["type"].string == Constant.sharedInstance.kResponseSuccessString {
+                
+                // 登录成功
+                // 存入plist
+                
+                UserData.sharedInstance.userId = String(stringInterpolationSegment: resultJson["map"]["courier"]["id"]) 
+                UserData.sharedInstance.userName = resultJson["map"]["courier"]["username"].string ?? ""
+                UserData.sharedInstance.userSex = resultJson["map"]["courier"]["gender"].string ?? ""
+                UserData.sharedInstance.userCreateDate = resultJson["map"]["courier"]["createDate"].string ?? ""
+                UserData.sharedInstance.userEmail = resultJson["map"]["courier"]["email"].string ?? ""
+                UserData.sharedInstance.userPhoneNumber = resultJson["map"]["courier"]["mobile"].string ?? ""
+                UserData.sharedInstance.userCheckStatus = resultJson["map"]["courier"]["isCheck"].string ?? ""
+                
+                UserData.sharedInstance.saveUserData()
+                
+                // 界面跳转.
+                self.gotoDashboardView()
+                
+            } else {
+            
+                self.showAlert(titleString: "加载失败", messageString: resultJson["content"].string)
+            }
+        }
     }
     
 

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12120" systemVersion="16E195" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="AIe-dB-5hP">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12120" systemVersion="16F73" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="AIe-dB-5hP">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -39,6 +39,46 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2Do-h1-Crj">
+                                <rect key="frame" x="37" y="263" width="300" height="140"/>
+                                <subviews>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dTv-DB-mdh">
+                                        <rect key="frame" x="90" y="50" width="120" height="40"/>
+                                        <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="点击重新加载" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QgH-8X-pJm">
+                                                <rect key="frame" x="17" y="11" width="86" height="17"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                <color key="textColor" red="0.19607843137254902" green="0.19607843137254902" blue="0.19607843137254902" alpha="1" colorSpace="calibratedRGB"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qkj-Jg-F8b">
+                                                <rect key="frame" x="0.0" y="0.0" width="120" height="40"/>
+                                                <state key="normal">
+                                                    <color key="titleColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                </state>
+                                            </button>
+                                        </subviews>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        <constraints>
+                                            <constraint firstAttribute="bottom" secondItem="qkj-Jg-F8b" secondAttribute="bottom" id="63m-fw-Ln9"/>
+                                            <constraint firstAttribute="height" constant="40" id="6ii-5d-iOJ"/>
+                                            <constraint firstAttribute="width" constant="120" id="JnB-IB-bou"/>
+                                            <constraint firstItem="QgH-8X-pJm" firstAttribute="centerX" secondItem="dTv-DB-mdh" secondAttribute="centerX" id="aq4-5h-Okc"/>
+                                            <constraint firstAttribute="trailing" secondItem="qkj-Jg-F8b" secondAttribute="trailing" id="i4n-JT-X7r"/>
+                                            <constraint firstItem="qkj-Jg-F8b" firstAttribute="leading" secondItem="dTv-DB-mdh" secondAttribute="leading" id="jJY-bf-qd6"/>
+                                            <constraint firstItem="QgH-8X-pJm" firstAttribute="centerY" secondItem="dTv-DB-mdh" secondAttribute="centerY" id="jn3-4y-V4C"/>
+                                            <constraint firstItem="qkj-Jg-F8b" firstAttribute="top" secondItem="dTv-DB-mdh" secondAttribute="top" id="l98-Qs-VZh"/>
+                                        </constraints>
+                                    </view>
+                                </subviews>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstItem="dTv-DB-mdh" firstAttribute="centerX" secondItem="2Do-h1-Crj" secondAttribute="centerX" id="62y-su-aS9"/>
+                                    <constraint firstItem="dTv-DB-mdh" firstAttribute="centerY" secondItem="2Do-h1-Crj" secondAttribute="centerY" id="GHy-S4-OJk"/>
+                                    <constraint firstAttribute="height" constant="140" id="NXd-WU-shZ"/>
+                                    <constraint firstAttribute="width" constant="300" id="p7Y-dG-vhW"/>
+                                </constraints>
+                            </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Cbt-6X-wU7">
                                 <rect key="frame" x="36" y="263" width="303" height="140"/>
                                 <subviews>
@@ -854,9 +894,11 @@
                         <constraints>
                             <constraint firstItem="FsD-g7-Lj3" firstAttribute="leading" secondItem="fN0-0X-RLo" secondAttribute="leadingMargin" constant="20" id="0Yv-BT-RCq"/>
                             <constraint firstItem="RmX-dO-faj" firstAttribute="leading" secondItem="fN0-0X-RLo" secondAttribute="leading" id="4Ww-1E-IZz"/>
+                            <constraint firstItem="2Do-h1-Crj" firstAttribute="centerX" secondItem="fN0-0X-RLo" secondAttribute="centerX" id="Apd-Bl-g0U"/>
                             <constraint firstItem="C8d-Hy-1Ht" firstAttribute="top" secondItem="FsD-g7-Lj3" secondAttribute="bottom" constant="20" id="WpN-Lg-Zwy"/>
                             <constraint firstItem="Cbt-6X-wU7" firstAttribute="centerX" secondItem="fN0-0X-RLo" secondAttribute="centerX" id="aWP-4Z-HNj"/>
                             <constraint firstItem="Cbt-6X-wU7" firstAttribute="centerY" secondItem="fN0-0X-RLo" secondAttribute="centerY" id="df8-oi-cNP"/>
+                            <constraint firstItem="2Do-h1-Crj" firstAttribute="centerY" secondItem="fN0-0X-RLo" secondAttribute="centerY" id="gzZ-9z-qW0"/>
                             <constraint firstAttribute="trailing" secondItem="RmX-dO-faj" secondAttribute="trailing" id="hWp-eM-Gbn"/>
                             <constraint firstItem="KSa-ik-CTN" firstAttribute="top" secondItem="RmX-dO-faj" secondAttribute="bottom" constant="8" id="jLP-LL-BTl"/>
                             <constraint firstItem="C8d-Hy-1Ht" firstAttribute="top" secondItem="KSa-ik-CTN" secondAttribute="bottom" id="o7T-Ln-e4r"/>
@@ -877,8 +919,11 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <outlet property="commitAuditButton" destination="FsD-g7-Lj3" id="TV5-lD-VF8"/>
+                        <outlet property="auditDescriptionLabel" destination="HFK-cT-5qw" id="ItC-hh-CvC"/>
+                        <outlet property="auditOperationButton" destination="FsD-g7-Lj3" id="g33-5U-9Vb"/>
+                        <outlet property="loadingFailedView" destination="2Do-h1-Crj" id="cC1-Vh-YW9"/>
                         <outlet property="notAuditView" destination="Cbt-6X-wU7" id="UFG-h0-0ma"/>
+                        <outlet property="reloadButton" destination="qkj-Jg-F8b" id="V7h-g8-lZH"/>
                         <outlet property="tasksTableView" destination="KSa-ik-CTN" id="eqg-aa-CTw"/>
                         <outlet property="topOptionsView" destination="RmX-dO-faj" id="aBK-iK-djU"/>
                     </connections>

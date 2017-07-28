@@ -15,7 +15,11 @@ PODS:
   - AFNetworking/UIKit (3.1.0):
     - AFNetworking/NSURLSession
   - Alamofire (4.4.0)
+  - BaiduMapKit (3.2.1)
   - BEMCheckBox (1.4.0)
+  - JCore (1.1.1)
+  - JPush (3.0.2):
+    - JCore (~> 1.1.1)
   - MJRefresh (3.1.12)
   - MOBFoundation_IDFA (2.2.15)
   - MZTimerLabel (0.5.4)
@@ -25,34 +29,42 @@ PODS:
   - SideMenu (2.3.0)
   - SMSSDK (2.1.5):
     - MOBFoundation_IDFA
+  - Starscream (2.0.3)
   - SVProgressHUD (2.1.2)
   - SwiftyJSON (3.1.4)
 
 DEPENDENCIES:
   - AFNetworking
   - Alamofire
+  - BaiduMapKit
   - BEMCheckBox
+  - JPush
   - MJRefresh
   - MZTimerLabel
   - SDWebImage
   - SideMenu
   - SMSSDK
+  - Starscream
   - SVProgressHUD
   - SwiftyJSON
 
 SPEC CHECKSUMS:
   AFNetworking: 5e0e199f73d8626b11e79750991f5d173d1f8b67
   Alamofire: dc44b1600b800eb63da6a19039a0083d62a6a62d
+  BaiduMapKit: 9c748785aa3dddfc41dcb70c14b21ce32f680930
   BEMCheckBox: e18e4a148905b290bd03d98b767651c104f4eda3
+  JCore: 2210a789c8efb7dc2a46b1c24d2209b995b18ad2
+  JPush: 01a693fafe51b93eafc2e368bbc7a7cc07e12ce4
   MJRefresh: b96cdb21c4aa75a7b07654311ab2f315c497e806
   MOBFoundation_IDFA: c5741d4cf9a08daa24203fe9e1f90ff1ab7403e5
   MZTimerLabel: cd9bfb9304540ef2a9e163384fca9c978f0dbf83
   SDWebImage: 76a6348bdc74eb5a55dd08a091ef298e56b55e41
   SideMenu: 43d092cf615cf472f105c5b9867a21beff9fc269
   SMSSDK: 7d19654f9d36392988e96bf697afdac983808b1a
+  Starscream: 3fdd5c277e57cca6b5c406d274e3f34a7c88f2ce
   SVProgressHUD: c404a55d78acbeb7ebb78b76d3faf986475a6994
   SwiftyJSON: c2842d878f95482ffceec5709abc3d05680c0220
 
-PODFILE CHECKSUM: 87a468c22393e42aeb366b6485bf0717be46b66f
+PODFILE CHECKSUM: 6db14587f05e301243dbdc5b2955f27ba2fe61d3
 
 COCOAPODS: 1.2.0
